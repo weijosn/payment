@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.PaymentRequestMapper">
+
+    <sql id="columns">
+		id,payment_code,payment_order_id,payment_version,create_time,remark,biz_no,app_id
+    </sql>
+    
+    <insert id="save" parameterType="com.cdzg.money.mapper.entity.PaymentRequestPO">
+    	insert into tb_payment_request (payment_code,payment_order_id,payment_version,create_time,biz_no,remark,app_id)
+    	values( #{paymentCode},#{paymentOrderId},#{paymentVersion},#{createTime},#{bizNo},#{remark},#{appId})
+	</insert>
+	
+	<select id="findByBizNo" resultType="com.cdzg.money.mapper.entity.PaymentRequestPO">
+		select <include refid="columns"></include>
+		from tb_payment_request where biz_no = #{bizNo} and app_id = #{appId}
+	</select>
+
+</mapper>

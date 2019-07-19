@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.ClusterLockMapper">
+
+	<sql id="columns">
+		id,lock_name,task_name,lock_status,lock_time,over_second
+	</sql>
+
+
+
+</mapper>

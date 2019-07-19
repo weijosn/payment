@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.PaymentStageMapper">
+
+    <sql id="columns">
+		id,
+		payment_order_id,
+		pay_type,
+		pay_plat,
+		fee_amount,
+		order_amount,
+		paied_amount,
+		payment_time,
+		readly_time,
+		create_time,
+		summary,
+		order_status,
+		payee_account_id,
+		payer_account_id
+    </sql>
+	
+	<select id="listByOrderId" resultType="com.cdzg.money.mapper.entity.PaymentStagePO">
+		select 
+			<include refid="columns"></include>
+		 from tb_payment_stage where payment_order_id = #{orderId}	
+	</select>
+	
+	<update id="updateToPending">
+		update tb_payment_stage 
+			set order_status = 'P', readly_time = #{readlyTime}
+			where id =#{id} and order_status = #{oldStatus}
+	</update>
+
+	<update id="updateToInit">
+		update tb_payment_stage 
+			set order_status = 'I', paied_amount = 0 ,readly_time = null,payment_time = null
+			where id =#{id} and order_status = #{oldStatus}
+	</update>
+
+	<update id="updateToSucced">
+		update tb_payment_stage 
+			set order_status = 'PS',paied_amount=#{paiedAmount},payment_time=#{paymentTime}
+			where id =#{id} and order_status = #{oldStatus}
+	</update>
+
+	<select id="findById" resultType="com.cdzg.money.mapper.entity.PaymentStagePO">
+		select 
+			<include refid="columns"></include>
+		 from tb_payment_stage where id = #{id}	
+	</select>
+	
+
+	<insert id="batchSave" parameterType="java.util.List">
+		insert into tb_payment_stage
+		(
+			payment_order_id,
+			pay_type,
+			pay_plat,
+			fee_amount,
+			order_amount,
+			paied_amount,
+			payment_time,
+			readly_time,
+			create_time,
+			summary,
+			order_status,
+			payee_account_id,
+			payer_account_id
+		) values   
+		<foreach collection="list" item="item" index="index" separator=",">
+             (
+             	#{item.paymentOrderId},
+             	#{item.payType},
+             	#{item.payPlat},
+             	#{item.feeAmount},
+             	#{item.orderAmount},
+             	#{item.paiedAmount},
+             	#{item.paymentTime},
+             	#{item.readlyTime},
+             	#{item.createTime},
+             	#{item.summary},
+             	#{item.orderStatus},
+             	#{item.payeeAccountId},
+             	#{item.payerAccountId}
+              )
+         </foreach>
+	</insert>
+	
+
+
+
+</mapper>

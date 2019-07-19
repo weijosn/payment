@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.TransactionMapper">
+
+    <sql id="columns">
+		id,
+		biz_no,
+		insert_time,
+		app_id,
+		status
+    </sql>
+
+	<insert id="save" parameterType="com.cdzg.money.mapper.entity.TransactionPO">
+		insert into tb_transaction
+		(
+		  biz_no,
+		  insert_time,
+		  app_id,
+		  status
+		) values (
+			#{bizNo},
+			#{insertTime},
+			#{appId},
+			#{status}
+		)
+	</insert>
+	
+	<select id="findByPrimaryKey" resultType="com.cdzg.money.mapper.entity.TransactionPO">
+		select 
+			<include refid="columns"></include>
+		from tb_transaction where
+		biz_no = #{bizNo}
+		and app_id = #{appId}
+	</select>
+	
+	<update id="updateToStatus">
+		update tb_transaction set status = #{newStatus}  where app_id = #{appId}  and biz_no = #{bizNo}  and status = #{oldStatus}
+	</update>
+	
+	<update id="updateToSucced">
+		update tb_transaction set status = 1  where app_id = #{appId}  and biz_no = #{bizNo} and status != 1
+	</update>
+
+</mapper>

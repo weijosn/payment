@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.NotifyMapper">
+
+	<sql id="columns">
+		id,
+		payment_order_no,
+		notify_url,
+		notify_status,
+		goods_name,
+		response_code,
+		notify_time,
+		create_time,
+		notify_times
+	</sql>
+
+
+	<select id="findByOrderId" resultType="com.cdzg.money.mapper.entity.NotifyPO">
+		select
+		<include refid="columns" />
+		from tb_notify where payment_order_no = #{value}
+	</select>
+
+	<select id="queryPending" resultType="com.cdzg.money.mapper.entity.NotifyPO">
+		select
+		<include refid="columns" />
+		from tb_notify where 
+		notify_times &lt;= 5 and notify_time &lt;=sysdate() and notify_status = 1
+		limit 0,20
+	</select>
+	
+	<insert id="save">
+		insert into tb_notify(
+			payment_order_no,
+			notify_url,
+			notify_status,
+			goods_name,
+			response_code,
+			notify_time,
+			create_time,
+			notify_times
+		)
+		values(
+			#{paymentOrderNo},
+			#{notifyUrl},
+			#{notifyStatus},
+			#{goodsName},
+			#{responseCode},
+			#{notifyTime},
+			#{createTime},
+			#{notifyTimes}
+		)
+	</insert>
+
+	<update id="updateToPending">
+		update tb_notify set notify_status = 1 where id = #{id} and notify_status != 1
+	</update>
+	
+	<update id="updateNotify">
+		update tb_notify set notify_status = #{status},notify_times = #{notifyTimes},notify_time = #{notifyTime}
+		where id = #{id}
+	</update>
+	
+</mapper>

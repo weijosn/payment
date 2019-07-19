@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cdzg.money.mapper.AccountFrozenMapper">
+
+
+    <sql id="columns">
+			  id,
+			  account_id,
+			  amount ,
+			  orig_biz_no,
+			  avail_balance ,
+			  freeze_type ,
+			  insert_date ,
+			  status ,
+			  avail_unfrozen_amount ,reason
+    </sql>
+
+	<update id="unfreeze">
+		update tb_account_frozen 
+			set 
+				status = (case when (avail_unfrozen_amount - #{amount} ) = 0 then 2 else 1 end), 
+				avail_unfrozen_amount = avail_unfrozen_amount - #{amount}
+			where status = 1 
+				and  orig_biz_no = #{origBizNo} 
+				and ( avail_unfrozen_amount - #{amount} ) &gt;= 0 
+	</update>
+
+	<insert id="saveFreeze" parameterType="com.cdzg.money.mapper.entity.AccountFrozenPO">
+		insert into tb_account_frozen
+		(
+		  	  account_id,
+			  amount ,
+			  orig_biz_no,
+			  avail_balance ,
+			  freeze_type ,
+			  insert_date ,
+			  status ,
+			  avail_unfrozen_amount ,reason
+		) values (
+			#{accountId},
+			#{amount},
+			#{origBizNo},
+			#{availBalance},
+			#{freezeType},
+			#{insertDate},
+			#{status},
+			#{availUnfrozenAmount},#{reason}
+		)
+	</insert>
+	
+	<select id="findByOrigBizNo" resultType="com.cdzg.money.mapper.entity.AccountFrozenPO">
+		select <include refid="columns"></include>
+		from tb_account_frozen 
+		where orig_biz_no = #{origBizNo} and account_id = #{accountId}
+	</select>
+
+
+</mapper>

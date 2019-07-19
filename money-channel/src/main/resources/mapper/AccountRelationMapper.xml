@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cdzg.money.mapper.AccountRelationMapper">
+
+
+    <sql id="AccountRelationColumns">
+		pk_account_relation, 
+		account_no, 
+		relation_no, 
+		relation_type, 
+		create_time
+    </sql>
+
+
+    <select id="queryObject" resultType="com.cdzg.money.model.AccountRelation">
+        select
+        <include refid="AccountRelationColumns"/>
+        from account_relation where pk_account_relation = #{value}
+    </select>
+
+    <select id="queryList" resultType="com.cdzg.money.model.AccountRelation">
+        select
+        <include refid="AccountRelationColumns"/>
+        from account_relation
+        where dataStatus = 0
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="int">
+		select count(*) from account_relation where dataStatus = 0
+	</select>
+
+    <select id="queryData" resultType="com.cdzg.money.model.AccountRelation">
+        select
+        <include refid="AccountRelationColumns"/>
+        from account_relation
+        where dataStatus = 0
+    </select>
+
+    <select id="queryByAccountNo" resultType="com.cdzg.money.model.AccountRelation">
+        select
+        <include refid="AccountRelationColumns"/>
+        from account_relation
+        where account_no = #{accountNo}
+    </select>
+
+    <select id="queryByOpenAccount" resultType="com.cdzg.money.model.AccountRelation">
+        select
+        <include refid="AccountRelationColumns"/>
+        from account_relation
+        where account_no = #{open.partyInfo.accountNo} and relation_type = #{open.accountType}
+    </select>
+
+    <insert id="save" parameterType="com.cdzg.money.model.AccountRelation">
+		insert into account_relation
+		(
+			pk_account_relation, 
+			account_no, 
+			relation_no, 
+			relation_type,
+			`desc`,
+			create_time
+		)
+		values
+		(
+			#{pkAccountRelation}, 
+			#{accountNo}, 
+			#{relationNo}, 
+			#{relationType}, 
+			#{desc},
+			#{createTime}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.cdzg.money.model.AccountRelation">
+        update account_relation
+        <set>
+            <if test="accountNo != null">account_no = #{accountNo},</if>
+            <if test="relationNo != null">relation_no = #{relationNo},</if>
+            <if test="relationType != null">relation_type = #{relationType},</if>
+            <if test="createTime != null">create_time = #{createTime}</if>
+        </set>
+        where pk_account_relation = #{pkAccountRelation}
+    </update>
+
+    <update id="delete">
+		update account_relation set dataStatus = 1 where pk_account_relation = #{value}
+	</update>
+
+    <update id="deleteBatch">
+        update account_relation set dataStatus = 1 where pk_account_relation in
+        <foreach item="pkAccountRelation" collection="array" open="(" separator="," close=")">
+            #{pkAccountRelation}
+        </foreach>
+    </update>
+
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cdzg.money.mapper.AccountDCMapper">
+
+
+	<insert id="batchSave" parameterType="java.util.List">
+		insert into tb_account_dc
+		(
+		  account_id,
+		  account_title_id,
+		  dc_direction,
+		  amount,
+		  balance,
+		  insert_time,
+		  currency_type,
+		  summary,
+		  suite_no,
+		  settle_time
+		) values   
+		<foreach collection="list" item="item" index="index" separator=",">
+             (
+             	#{item.accountId},
+              	#{item.accountTitleId},
+              	#{item.dcDirection},
+              	#{item.amount},
+              	#{item.balance},
+              	#{item.insertTime},
+              	#{item.currencyType},
+              	#{item.summary},
+              	#{item.suiteNo},
+              	#{item.settleTime}
+              )
+         </foreach>
+	</insert>
+	
+	<insert id="save">
+		insert into tb_account_dc
+		(
+		  account_id,
+		  account_title_id,
+		  dc_direction,
+		  amount,
+		  balance,
+		  insert_time,
+		  currency_type,
+		  summary,
+		  suite_no,
+		  settle_time
+		) values   
+            (
+            	#{item.accountId},
+             	#{item.accountTitleId},
+             	#{item.dcDirection},
+             	#{item.amount},
+             	#{item.balance},
+             	#{item.insertTime},
+             	#{item.currencyType},
+             	#{item.summary},
+             	#{item.suiteNo},
+             	#{item.settleTime}
+             )
+	</insert>
+	
+
+</mapper>

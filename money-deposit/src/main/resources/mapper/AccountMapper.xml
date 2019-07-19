@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cdzg.money.mapper.AccountMapper">
+
+
+    <sql id="columns">
+	  account_id,
+	  balance,
+	  account_type,
+	  available_balance,
+	  currency_type,
+	  frozen_balance,
+	  create_time,
+	  last_update_time,
+	  memo,
+	  account_name,
+	  last_balance,
+	  account_title_id,
+	  member_id,
+	  status
+    </sql>
+
+	<insert id="save" parameterType="com.cdzg.money.mapper.entity.AccountPO">
+		insert into tb_account
+		(
+			  account_id,
+			  balance,
+			  account_type,
+			  available_balance,
+			  currency_type,
+			  frozen_balance,
+			  create_time,
+			  last_update_time,
+			  memo,
+			  account_name,
+			  last_balance,
+			  account_title_id,
+			  member_id,
+			  status
+		) values (
+			#{accountId},
+			#{balance},
+			#{accountType},
+			#{availableBalance},
+			#{currencyType},
+			#{frozenBalance},
+			#{createTime},
+			#{lastUpdateTime},
+			#{memo},
+			#{accountName},
+			#{lastBalance},
+			#{accountTitleId},
+			#{memberId},
+			#{status}
+		)
+	</insert>
+	
+	<select id="listByMemberId" resultType="com.cdzg.money.mapper.entity.AccountPO">
+		select 
+			<include refid="columns"></include>
+		 from tb_account where member_id = #{memberId}	
+	</select>
+	
+	<select id="findByAccountId" resultType="com.cdzg.money.mapper.entity.AccountPO">
+		select 
+			<include refid="columns"></include>
+		 from tb_account where account_id = #{acctId}
+	</select>
+	
+	<update id="updateStatusTo">
+		update tb_account set status = #{accountStatus} where account_id = #{accountId} and status != #{accountStatus}
+	</update>
+	
+	<select id="selectByIdSet" resultType="com.cdzg.money.mapper.entity.AccountPO">
+		SELECT
+		<include refid="columns" />
+		from tb_account
+		WHERE account_id IN
+		<foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+		  #{item}
+		</foreach>
+	</select>
+	
+	<update id="freezeBalance">
+		update tb_account set 
+			last_balance = balance ,
+			available_balance = available_balance - #{amount} , 
+			frozen_balance = frozen_balance + #{amount}
+		where account_id = #{accountId} and (available_balance - #{amount}) &gt;= 0
+	</update>
+	
+	<update id="unfreezeBalance">
+		update tb_account set 
+			last_balance = balance ,
+			available_balance = available_balance + #{amount} , 
+			frozen_balance = frozen_balance - #{amount}
+		where account_id = #{accountId} and (frozen_balance - #{amount}) &gt;= 0	
+	</update>
+
+	<update id="debit">
+		update tb_account set 
+			last_balance = balance,
+			available_balance = available_balance - #{amount} , 
+			balance = balance - #{amount}
+		where account_id = #{accountId} and (available_balance - #{amount}) &gt;= 0
+	</update>
+	
+	<update id="credit">
+		update tb_account set 
+			last_balance = balance,
+			available_balance = available_balance + #{amount} , 
+			balance = balance + #{amount}
+		where account_id = #{accountId}	
+	</update>
+
+</mapper>

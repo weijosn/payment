@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cdzg.money.mapper.BizTxMapper">
+
+
+    <sql id="BizTxColumns">
+		pk_biz_tx,
+		biz_no,
+		tx_sn,
+		inst_code,
+		grant_type,
+		pk_org,
+		creat_time
+    </sql>
+
+
+    <select id="queryObject" resultType="com.cdzg.money.model.BizTx">
+        select
+        <include refid="BizTxColumns"/>
+        from biz_tx where biz_no = #{bizNo}
+    </select>
+
+    <insert id="save" parameterType="com.cdzg.money.model.BizTx">
+		insert into biz_tx
+		(
+			pk_biz_tx,
+			biz_no,
+			tx_sn,
+			inst_code,
+			grant_type,
+			pk_org,
+			creat_time
+		)
+		values
+		(
+			#{pkBizTx},
+			#{bizNo},
+			#{txSn},
+			#{instCode},
+			#{grantType},
+			#{pkOrg},
+			#{creatTime},
+		)
+	</insert>
+
+
+</mapper>

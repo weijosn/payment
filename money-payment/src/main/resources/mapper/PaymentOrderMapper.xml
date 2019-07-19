@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.PaymentOrderMapper">
+
+    <sql id="columns">
+		id,
+		payment_order_id,
+		order_amount,
+		paied_amount,
+		payment_code,
+		order_status,
+		payment_time,
+		readly_time,
+		create_time,
+		update_time,
+		app_id,
+		trade_no,
+		order_type,
+		remark
+    </sql>
+    
+    <update id="closeOrder">
+    	update tb_payment_order set order_status = 'F' where payment_order_id = #{orderId}    
+    </update>
+    
+    <update id="updateToSucced">
+    	update tb_payment_order set paied_amount = #{paiedAmount} , order_status = 'PS' ,payment_time = #{paymentTime}
+    	where id = #{id}
+    </update>
+    
+
+    <update id="updateToPartyPaied">
+    	update tb_payment_order set paied_amount = #{partyPaiedTotalAmount} , payment_time = #{paymentTime}
+    	where id = #{id}
+    </update>
+    
+	<select id="findByTradeNo" resultType="com.cdzg.money.mapper.entity.PaymentOrderPO">
+		select 
+			<include refid="columns"></include>
+		 from tb_payment_order where trade_no = #{tradeNo} and app_id = #{appId}
+	</select>
+
+	<select id="findByOrderId" resultType="com.cdzg.money.mapper.entity.PaymentOrderPO">
+		select 
+			<include refid="columns"></include>
+		 from tb_payment_order where payment_order_id = #{orderId}
+	</select>
+
+	<insert id="save" parameterType="com.cdzg.money.mapper.entity.PaymentOrderPO">
+		<!--
+		多种方式生成ID 
+	    <selectKey resultType="string" keyProperty="paymentOrderId"> 
+	        SELECT concat(DATE_FORMAT(NOW(),'%Y%m%d'),LAST_INSERT_ID())
+	    </selectKey>
+	    -->
+		insert into tb_payment_order
+		(
+			payment_order_id,
+			order_amount,
+			paied_amount,
+			payment_code,
+			order_status,
+			payment_time,
+			readly_time,
+			create_time,
+			update_time,
+			app_id,
+			trade_no,
+			order_type,
+			remark
+		) value  (
+            	#{paymentOrderId},
+            	#{orderAmount},
+            	#{paiedAmount},
+            	#{paymentCode},
+            	#{orderStatus},
+            	#{paymentTime},
+            	#{readlyTime},
+            	#{createTime},
+            	#{updateTime},
+            	#{appId},
+            	#{tradeNo},
+            	#{orderType},
+            	#{remark}
+             )
+	</insert>
+	
+	
+
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdzg.money.mapper.RefundOrderMapper">
+
+	<sql id="columns">
+	  id,
+	  payment_order_id,
+	  refund_order_id,
+	  refund_amount,
+	  actual_refund_amount,
+	  refund_status,
+	  create_time,
+	  refund_time,
+	  realy_time,
+	  trade_no,
+	  app_id
+	</sql>
+
+	<update id="updateToPending">
+		update tb_refund_order set refund_status = 'P' where id = #{id} and refund_status = 'I'
+	</update>
+	<update id="updateToSucced">
+		update tb_refund_order set refund_status = 'PS' where id = #{id}
+	</update>
+	<update id="updateToFailed">
+		update tb_refund_order set refund_status = 'F' where id = #{id}
+	</update>
+
+	<select id="findByPaymentOrderId" resultType="com.cdzg.money.mapper.entity.RefundOrderPO">
+		select
+		<include refid="columns" />
+		from tb_refund_order where payment_order_id = #{value}
+	</select>
+
+	<insert id="save">
+		insert into tb_refund_order(
+			  payment_order_id,
+			  refund_order_id,
+			  refund_amount,
+			  actual_refund_amount,
+			  refund_status,
+			  create_time,
+			  refund_time,
+			  realy_time,
+			  trade_no,
+			  app_id
+		)
+		values(
+			#{paymentOrderId},
+			#{refundOrderId},
+			#{refundAmount},
+			#{actualRefundAmount},
+			#{refundStatus},
+			#{createTime},
+			#{refundTime},
+			#{realyTime},
+			#{tradeNo},
+			#{appId}
+		)
+	</insert>
+
+</mapper>

@@ -1,0 +1,1 @@
+exceptionFilter=com.cdzg.money.exception.ChannelFilter
